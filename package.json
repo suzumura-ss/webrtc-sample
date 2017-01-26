@@ -1,0 +1,37 @@
+{
+  "name": "webrtc-sample",
+  "version": "1.0.0",
+  "description": "WebRTC example with skyway.",
+  "repository": "https://github.com/suzumura-ss/webrtc-sample",
+  "author": "Toshiyuki Suzumura",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "compile": "gulp compile",
+    "watch": "gulp watch"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.20.0",
+    "bootstrap": "^3.3.7",
+    "bootstrap.native": "^1.1.0",
+    "flux": "^3.1.2",
+    "immutable": "^3.8.1",
+    "react": "^15.3.2",
+    "react-bootstrap": "^0.30.7",
+    "react-dom": "^15.3.2",
+    "three": "^0.83.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "connect": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-if": "^2.0.2",
+    "gulp-sass": "^3.0.0",
+    "gulp-uglify": "^2.0.0",
+    "gulp-webpack": "^1.5.0",
+    "serve-static": "^1.11.2"
+  }
+}

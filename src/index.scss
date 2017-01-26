@@ -1,0 +1,10 @@
+video {
+  &.video-self {
+    width: 320px;
+    height: 240px;
+  }
+  &.video-other {
+    width: auto;
+    height: auto;
+  }
+}
