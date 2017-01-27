@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {InputGroup, FormControl, Button} from 'react-bootstrap';
+import {InputGroup, FormControl, Button, Grid, Row, Col} from 'react-bootstrap';
 import ClipboardButton from 'react-clipboard.js';
 import ReactTooltip from 'react-tooltip';
 import SphereRender from './sphereRender';
@@ -81,22 +81,18 @@ class WebRTC extends React.Component {
           </InputGroup>
           <ReactTooltip effect='solid' />
         </InputGroup>
-        <table>
-          <tbody>
-            <tr>
-              <td>Me</td>
-              <td>Destination</td>
-            </tr>
-            <tr>
-              <td>
-                <SphereRender ref='videoSelf'  renderSize={{width:400, height:300}} />
-              </td>
-              <td>
-                <SphereRender ref='videoOther' renderSize={{width:400, height:300}} />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <Grid>
+          <Row>
+            <Col xs={12} sm={6} >
+              <h3>Me</h3>
+              <SphereRender ref='videoSelf'  renderSize={{width:345, height:290}} />
+            </Col>
+            <Col xs={12} sm={6} >
+              <h3>Destination</h3>
+              <SphereRender ref='videoOther' renderSize={{width:345, height:290}} />
+            </Col>
+          </Row>
+        </Grid>
       </div>
     );
   }
