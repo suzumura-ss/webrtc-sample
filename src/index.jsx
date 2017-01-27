@@ -16,34 +16,34 @@ class WebRTC extends React.Component {
 
   connect() {
     window.location.hash = this.roomId;
-    navigator.mediaDevices.getUserMedia({video: true}).then((streamOut)=>{
-      this.refs.videoSelf.start(streamOut);
-      this.call = this.peer.call(this.roomId, streamOut);
-      this.call.on('stream', (streamIn)=>{
-        this.refs.videoOther.start(streamIn);
-      });
+    this.call = this.peer.call(this.roomId, this.streamOut);
+    this.call.on('stream', (streamIn)=>{
+      console.log('connect.onStream');
+      this.refs.videoOther.start(streamIn);
     });
   }
 
   componentDidMount() {
+    navigator.mediaDevices.getUserMedia({video: true}).then((streamOut)=>{
+      const self = this;
+      setTimeout(()=>{
+        self.refs.videoSelf.start(streamOut);
+        self.streamOut = streamOut;
+      }, 1000);
+    });
     this.peer = new Peer({key: this.props.skyway, debug: 3});
     this.peer.on('open', (roomId)=>{
-      console.log('listen.onOpen');
+      console.log('componentDidMount.onOpen');
       this.setState((prevState, props)=>{
-        console.log('listen.setState');
         return {roomId};
       });
     });
     this.peer.on('call', (call)=>{
-      console.log('listen.onCall');
       // Answer the call, providing our mediaStream
-      navigator.mediaDevices.getUserMedia({video: true}).then((streamOut)=>{
-        console.log('listen.call.onStreamOut');
-        this.refs.videoSelf.start(streamOut);
-        call.answer(streamOut);
-      });
+      console.log('componentDidMount.onCall');
+      call.answer(this.streamOut);
       call.on('stream', (streamIn)=>{
-        console.log('listen.call.onStream');
+        console.log('componentDidMount.onCall.onStream');
         this.refs.videoOther.start(streamIn);
       });
     });
