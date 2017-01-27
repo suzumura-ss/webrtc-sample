@@ -59,18 +59,19 @@ class WebRTC extends React.Component {
   }
 
   render() {
+    const hideMyRoom = (this.props.roomId)? {display: 'none'}: {}
     return(
       <div>
         <InputGroup>
           <InputGroup>
-            <InputGroup.Addon>My room ID</InputGroup.Addon>
-            <FormControl type='text' value={this.state.roomId} placeholder='share on listen' />
-            <InputGroup.Addon ref='copiedTop' data-tip='Copied' data-event='null'>
+            <InputGroup.Addon style={hideMyRoom}>Share my room ID</InputGroup.Addon>
+            <FormControl style={hideMyRoom} type='text' value={this.state.roomId} readOnly />
+            <InputGroup.Addon style={hideMyRoom} ref='copiedTop' data-tip='Copied' data-event='null'>
               <ClipboardButton className='clippy' option-text={()=>this.getText()} onSuccess={()=>this.onCopyToClipboard()}>
                 <img src='./assets/svg/clippy.svg' />
               </ClipboardButton>
             </InputGroup.Addon>
-            <FormControl ref='roomId' type='text' placeholder='Enter room Id' onChange={(ev)=>{this.roomId = ev.target.value}} />
+            <FormControl ref='roomId' type='text' placeholder='Or Enter room Id' defaultValue={this.props.roomId} onChange={(ev)=>{this.roomId = ev.target.value}} />
             <InputGroup.Button><Button bsStyle='primary' onClick={()=>this.connect()} >CALL</Button></InputGroup.Button>
           </InputGroup>
           <ReactTooltip effect='solid' />
@@ -98,6 +99,6 @@ class WebRTC extends React.Component {
 
 
 ReactDOM.render(
-  <WebRTC skyway='d4137abc-6c4b-4c26-b8ec-a692a70cb971'/>,
+  <WebRTC skyway='d4137abc-6c4b-4c26-b8ec-a692a70cb971' roomId={window.location.hash.substr(1)}/>,
   document.getElementById('application')
 );
