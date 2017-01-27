@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {InputGroup, FormControl, Button} from 'react-bootstrap';
 import ClipboardButton from 'react-clipboard.js';
+import ReactTooltip from 'react-tooltip';
 
 
 class WebRTC extends React.Component {
@@ -22,7 +23,7 @@ class WebRTC extends React.Component {
     });
   }
 
-  open() {
+  componentDidMount() {
     this.peer = new Peer({key: this.props.skyway, debug: 3});
     this.peer.on('open', (roomId)=>{
       console.log('listen.onOpen');
@@ -49,25 +50,30 @@ class WebRTC extends React.Component {
   getText() {
     return this.state.roomId;
   }
+  onCopyToClipboard() {
+    const tt = ReactDOM.findDOMNode(this.refs.copiedTop);
+    ReactTooltip.show(tt);
+    setTimeout(()=>{
+      ReactTooltip.hide(tt);
+    }, 3000);
+  }
 
   render() {
-    if (!this.peer) {
-      this.open();
-    }
     return(
       <div>
         <InputGroup>
           <InputGroup>
             <InputGroup.Addon>My room ID</InputGroup.Addon>
             <FormControl type='text' value={this.state.roomId} placeholder='share on listen' />
-            <InputGroup.Addon>
-              <ClipboardButton className='clippy' option-text={()=>this.getText()}>
+            <InputGroup.Addon ref='copiedTop' data-tip='Copied' data-event='null'>
+              <ClipboardButton className='clippy' option-text={()=>this.getText()} onSuccess={()=>this.onCopyToClipboard()}>
                 <img src='./assets/svg/clippy.svg' />
               </ClipboardButton>
             </InputGroup.Addon>
-            <FormControl ref='roomId' type='text' placeholder='roomId' onChange={(ev)=>{this.roomId = ev.target.value}} />
-            <InputGroup.Button><Button onClick={()=>this.connect()} >CALL</Button></InputGroup.Button>
+            <FormControl ref='roomId' type='text' placeholder='Enter room Id' onChange={(ev)=>{this.roomId = ev.target.value}} />
+            <InputGroup.Button><Button bsStyle='primary' onClick={()=>this.connect()} >CALL</Button></InputGroup.Button>
           </InputGroup>
+          <ReactTooltip effect='solid' />
         </InputGroup>
         <table>
           <tbody>
