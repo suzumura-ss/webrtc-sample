@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {InputGroup, FormControl, Button} from 'react-bootstrap';
 import ClipboardButton from 'react-clipboard.js';
 import ReactTooltip from 'react-tooltip';
+import SphereRender from './sphereRender';
 
 
 class WebRTC extends React.Component {
@@ -16,10 +17,10 @@ class WebRTC extends React.Component {
   connect() {
     window.location.hash = this.roomId;
     navigator.mediaDevices.getUserMedia({video: true}).then((streamOut)=>{
-      this.refs.videoSelf.src = URL.createObjectURL(streamOut);
+      this.refs.videoSelf.start(streamOut);
       this.call = this.peer.call(this.roomId, streamOut);
       this.call.on('stream', (streamIn)=>{
-        this.refs.videoOther.src = URL.createObjectURL(streamIn);
+        this.refs.videoOther.start(streamIn);
       });
     });
   }
@@ -38,12 +39,12 @@ class WebRTC extends React.Component {
       // Answer the call, providing our mediaStream
       navigator.mediaDevices.getUserMedia({video: true}).then((streamOut)=>{
         console.log('listen.call.onStreamOut');
-        this.refs.videoSelf.src = URL.createObjectURL(streamOut);
+        this.refs.videoSelf.start(streamOut);
         call.answer(streamOut);
       });
       call.on('stream', (streamIn)=>{
         console.log('listen.call.onStream');
-        this.refs.videoOther.src = URL.createObjectURL(streamIn);
+        this.refs.videoOther.start(streamIn);
       });
     });
   }
@@ -88,10 +89,10 @@ class WebRTC extends React.Component {
             </tr>
             <tr>
               <td>
-                <video ref='videoSelf'  autoPlay muted={true} className='video-self'></video>
+                <SphereRender ref='videoSelf'  renderSize={{width:400, height:300}} />
               </td>
               <td>
-                <video ref='videoOther' autoPlay muted={true} className='video-other'></video>
+                <SphereRender ref='videoOther' renderSize={{width:400, height:300}} />
               </td>
             </tr>
           </tbody>
