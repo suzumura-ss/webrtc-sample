@@ -59,12 +59,13 @@ export default class SphereRender extends React.Component {
 
     // attach the video to a texture
     const videoTexture = new THREE.Texture(this.uvc_video);
-    videoTexture.minFilter = THREE.NearestFilter;
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
 
     // create a sphere at the origin textured on the inside by the video
-    const sphere = new THREE.SphereGeometry(50, 80, 40),
-        material = new THREE.MeshBasicMaterial({ map: videoTexture });
-    material.side = THREE.BackSide;
+    const sphere = new THREE.SphereGeometry(50, 80, 40, 0),
+        material = new THREE.MeshBasicMaterial({ map: videoTexture, overdraw: true, side: THREE.FrontSide});
+    sphere.scale(-1, 1, 1);
     scene.add(new THREE.Mesh(sphere, material));
 
     // setup a light and camera inside the sphere
