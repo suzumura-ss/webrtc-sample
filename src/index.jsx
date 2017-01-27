@@ -14,6 +14,7 @@ class WebRTC extends React.Component {
   }
 
   connect() {
+    window.location.hash = this.roomId;
     navigator.mediaDevices.getUserMedia({video: true}).then((streamOut)=>{
       this.refs.videoSelf.src = URL.createObjectURL(streamOut);
       this.call = this.peer.call(this.roomId, streamOut);
@@ -60,6 +61,9 @@ class WebRTC extends React.Component {
 
   render() {
     const hideMyRoom = (this.props.roomId)? {display: 'none'}: {}
+    if (this.props.roomId) {
+      this.roomId = this.props.roomId;
+    }
     return(
       <div>
         <InputGroup>
