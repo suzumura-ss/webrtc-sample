@@ -84,11 +84,9 @@ class WebRTC extends React.Component {
         <Grid>
           <Row>
             <Col xs={12} sm={6} >
-              <h3>Me</h3>
               <SphereRender ref='videoSelf'  renderSize={{width:345, height:290}} />
             </Col>
             <Col xs={12} sm={6} >
-              <h3>Destination</h3>
               <SphereRender ref='videoOther' renderSize={{width:345, height:290}} />
             </Col>
           </Row>
