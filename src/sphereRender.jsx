@@ -33,16 +33,16 @@ export default class SphereRender extends React.Component {
   }
 
   start(stream) {
-    if (this.uvc_video) {
-      this.uvc_video.pause();
-      this.uvc_video.setAttribute('src', window.URL.createObjectURL(stream));
-      this.uvc_video.load();
-      this.uvc_video.play();
+    if (this.video) {
+      this.video.pause();
+      this.video.setAttribute('src', window.URL.createObjectURL(stream));
+      this.video.load();
+      this.video.play();
       return;
     }
 
-    const uvc_scene = ReactDOM.findDOMNode(this);
-    if (!uvc_scene) {
+    const this_element = ReactDOM.findDOMNode(this);
+    if (!this_element) {
       setTimeout(()=>{
         this.start(stream);
       }, 100);
@@ -50,15 +50,15 @@ export default class SphereRender extends React.Component {
     }
 
     // create the video tag
-    this.uvc_video = uvc_scene.appendChild(document.createElement('video'));
-    this.uvc_video.style = "display: none";
-    this.uvc_video.src = window.URL.createObjectURL(stream);
+    this.video = this_element.appendChild(document.createElement('video'));
+    this.video.style = "display: none";
+    this.video.src = window.URL.createObjectURL(stream);
 
     // create a scene
     const scene = new THREE.Scene();
 
     // attach the video to a texture
-    const videoTexture = new THREE.Texture(this.uvc_video);
+    const videoTexture = new THREE.Texture(this.video);
     videoTexture.minFilter = THREE.LinearFilter;
     videoTexture.magFilter = THREE.LinearFilter;
 
@@ -77,7 +77,7 @@ export default class SphereRender extends React.Component {
     scene.add(this.camera);
 
     // controls for rotating around the origin
-    this.controls = new THREE.OrbitControls(this.camera, uvc_scene);
+    this.controls = new THREE.OrbitControls(this.camera, this_element);
     this.controls.autoRotate = this.props.autoRotate;
     // invert rotation because we're inside the sphere
     this.controls.rotateSpeed = -1.0;
@@ -87,7 +87,7 @@ export default class SphereRender extends React.Component {
     // render
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(width, height, true);
-    uvc_scene.appendChild(this.renderer.domElement);
+    this_element.appendChild(this.renderer.domElement);
 
     const self = this;
     (function render() {
@@ -95,7 +95,7 @@ export default class SphereRender extends React.Component {
       self.controls.update();
 
       // update the video texture
-      if (self.uvc_video.readyState === self.uvc_video.HAVE_ENOUGH_DATA) {
+      if (self.video.readyState === self.video.HAVE_ENOUGH_DATA) {
         videoTexture.needsUpdate = true;
       }
       self.renderer.render(scene, self.camera);
