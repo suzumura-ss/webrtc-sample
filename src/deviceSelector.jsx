@@ -18,7 +18,7 @@ export default class DeviceSelector extends React.Component {
   }
 
   trimDeviceLabel(label) {
-    return label.replace(/ \([\w\d\:]+\:[\w\d\/]+\)/, '');
+    return label.replace(/ \([\w\d\:]+\:[\w\d\/]+\)/, '') || 'Default';
   }
 
   updateDeviceList(selectDefault) {
