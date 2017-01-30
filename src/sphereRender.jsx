@@ -33,14 +33,6 @@ export default class SphereRender extends React.Component {
   }
 
   start(stream) {
-    if (this.video) {
-      this.video.pause();
-      this.video.setAttribute('src', window.URL.createObjectURL(stream));
-      this.video.load();
-      this.video.play();
-      return;
-    }
-
     const this_element = ReactDOM.findDOMNode(this);
     if (!this_element) {
       setTimeout(()=>{
@@ -48,17 +40,20 @@ export default class SphereRender extends React.Component {
       }, 100);
       return;
     }
+    while (this_element.firstChild) {
+      this_element.removeChild(this_element.firstChild);
+    }
 
     // create the video tag
-    this.video = this_element.appendChild(document.createElement('video'));
-    this.video.style = "display: none";
-    this.video.src = window.URL.createObjectURL(stream);
+    const video = this_element.appendChild(document.createElement('video'));
+    video.style = "display: none";
+    video.src = window.URL.createObjectURL(stream);
 
     // create a scene
     const scene = new THREE.Scene();
 
     // attach the video to a texture
-    const videoTexture = new THREE.Texture(this.video);
+    const videoTexture = new THREE.Texture(video);
     videoTexture.minFilter = THREE.LinearFilter;
     videoTexture.magFilter = THREE.LinearFilter;
 
@@ -95,7 +90,7 @@ export default class SphereRender extends React.Component {
       self.controls.update();
 
       // update the video texture
-      if (self.video.readyState === self.video.HAVE_ENOUGH_DATA) {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
         videoTexture.needsUpdate = true;
       }
       self.renderer.render(scene, self.camera);

@@ -4,13 +4,15 @@ import {InputGroup, FormControl, Button, Grid, Row, Col} from 'react-bootstrap';
 import ClipboardButton from 'react-clipboard.js';
 import ReactTooltip from 'react-tooltip';
 import SphereRender from './sphereRender';
+import DeviceSelector from './deviceSelector';
 
 
 class WebRTC extends React.Component {
   constructor() {
     super();
     this.state = {
-      roomId: ''
+      roomId: '',
+      deviceLabel: ''
     }
   }
 
@@ -24,13 +26,6 @@ class WebRTC extends React.Component {
   }
 
   componentDidMount() {
-    navigator.mediaDevices.getUserMedia({video: true}).then((streamOut)=>{
-      const self = this;
-      setTimeout(()=>{
-        self.refs.videoSelf.start(streamOut);
-        self.streamOut = streamOut;
-      }, 1000);
-    });
     this.peer = new Peer({key: this.props.skyway, debug: 3});
     this.peer.on('open', (roomId)=>{
       console.log('componentDidMount.onOpen');
@@ -46,6 +41,22 @@ class WebRTC extends React.Component {
         console.log('componentDidMount.onCall.onStream');
         this.refs.videoOther.start(streamIn);
       });
+    });
+  }
+
+  onSelectDevice(deviceLabel, deviceId) {
+    navigator.mediaDevices.getUserMedia({
+      video:{
+        optional:[
+          {sourceId: deviceId}
+        ]
+      }
+    }).then((streamOut)=>{
+      this.streamOut = streamOut;
+      this.setState((prevState, props)=>{
+        return {deviceLabel};
+      });
+      this.refs.videoSelf.start(streamOut);
     });
   }
 
@@ -65,9 +76,20 @@ class WebRTC extends React.Component {
     if (this.props.roomId) {
       this.roomId = this.props.roomId;
     }
+    let hideDeviceList, hideControlls;
+    if (this.state.deviceLabel) {
+      hideDeviceList = {display: 'none'}
+      hideControlls  = {}
+    } else {
+      hideDeviceList = {}
+      hideControlls  = {display: 'none'}
+    }
     return(
       <div>
-        <InputGroup>
+        <div style={hideDeviceList}>
+          <DeviceSelector onSelectDevice={(label, deviceId)=>this.onSelectDevice(label, deviceId)} />
+        </div>
+        <InputGroup style={hideControlls}>
           <InputGroup>
             <InputGroup.Addon style={hideMyRoom}>Share my room ID</InputGroup.Addon>
             <FormControl style={hideMyRoom} type='text' value={this.state.roomId} readOnly />
