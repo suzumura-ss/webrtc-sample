@@ -32,7 +32,11 @@ export default class SphereRender extends React.Component {
     });
   }
 
-  start(stream) {
+  start(stream, option) {
+    if (!option) {
+      option = {};
+    }
+    console.log('SphereRender#start', stream, option);
     const this_element = ReactDOM.findDOMNode(this);
     if (!this_element) {
       setTimeout(()=>{
@@ -48,6 +52,8 @@ export default class SphereRender extends React.Component {
     const video = this_element.appendChild(document.createElement('video'));
     video.style = "display: none";
     video.src = window.URL.createObjectURL(stream);
+    video.autoplay = true;
+    video.muted = !!option.mute;
 
     // create a scene
     const scene = new THREE.Scene();

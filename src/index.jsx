@@ -20,7 +20,11 @@ class WebRTC extends React.Component {
     window.location.hash = this.roomId;
     this.call = this.peer.call(this.roomId, this.streamOut);
     this.call.on('stream', (streamIn)=>{
-      console.log('connect.onStream');
+      const videoTrack = streamIn.getVideoTracks()[0],
+            audioTrack = streamIn.getAudioTracks()[0],
+            videoLabel = videoTrack ? videoTrack.label : undefined,
+            audioLabel = audioTrack ? audioTrack.label : undefined;
+      console.log('connect.onStream', {video: videoLabel, audio: audioLabel});
       this.refs.videoOther.start(streamIn);
     });
   }
@@ -38,7 +42,11 @@ class WebRTC extends React.Component {
       console.log('componentDidMount.onCall');
       call.answer(this.streamOut);
       call.on('stream', (streamIn)=>{
-        console.log('componentDidMount.onCall.onStream');
+        const videoTrack = streamIn.getVideoTracks()[0],
+              audioTrack = streamIn.getAudioTracks()[0],
+              videoLabel = videoTrack ? videoTrack.label : undefined,
+              audioLabel = audioTrack ? audioTrack.label : undefined;
+        console.log('componentDidMount.onCall.onStream', {video: videoLabel, audio: audioLabel});
         this.refs.videoOther.start(streamIn);
       });
     });
@@ -53,10 +61,11 @@ class WebRTC extends React.Component {
             audioTrack = streamOut.getAudioTracks()[0],
             videoLabel = videoTrack ? videoTrack.label : undefined,
             audioLabel = audioTrack ? audioTrack.label : undefined;
+      console.log('onSelectDevice', {video: videoLabel, audio: audioLabel});
       this.setState((prevState, props)=>{
         return {deviceLabel, videoLabel, audioLabel};
       });
-      this.refs.videoSelf.start(streamOut);
+      this.refs.videoSelf.start(streamOut, {mute: true});
     });
   }
 
