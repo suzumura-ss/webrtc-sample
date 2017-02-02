@@ -44,17 +44,17 @@ class WebRTC extends React.Component {
     });
   }
 
-  onSelectDevice(deviceLabel, deviceId) {
-    navigator.mediaDevices.getUserMedia({
-      video:{
-        optional:[
-          {sourceId: deviceId}
-        ]
-      }
-    }).then((streamOut)=>{
+  onSelectDevice(deviceLabel, videoDeviceId, audioDeviceId) {
+    const video = { optional:[ {sourceId: videoDeviceId} ] },
+          audio = audioDeviceId ? { optional:[ {sourceId: audioDeviceId} ] } : true;
+    navigator.mediaDevices.getUserMedia({video, audio}).then((streamOut)=>{
       this.streamOut = streamOut;
+      const videoTrack = streamOut.getVideoTracks()[0],
+            audioTrack = streamOut.getAudioTracks()[0],
+            videoLabel = videoTrack ? videoTrack.label : undefined,
+            audioLabel = audioTrack ? audioTrack.label : undefined;
       this.setState((prevState, props)=>{
-        return {deviceLabel};
+        return {deviceLabel, videoLabel, audioLabel};
       });
       this.refs.videoSelf.start(streamOut);
     });
@@ -80,6 +80,7 @@ class WebRTC extends React.Component {
     if (this.state.deviceLabel) {
       hideDeviceList = {display: 'none'}
       hideControlls  = {}
+      console.log({video: this.state.videoLabel, audio: this.state.audioLabel});
     } else {
       hideDeviceList = {}
       hideControlls  = {display: 'none'}
@@ -87,7 +88,7 @@ class WebRTC extends React.Component {
     return(
       <div>
         <div style={hideDeviceList}>
-          <DeviceSelector onSelectDevice={(label, deviceId)=>this.onSelectDevice(label, deviceId)} />
+          <DeviceSelector onSelectDevice={(label, videoDeviceId, audioDeviceId)=>this.onSelectDevice(label, videoDeviceId, audioDeviceId)} />
         </div>
         <InputGroup style={hideControlls}>
           <InputGroup>
