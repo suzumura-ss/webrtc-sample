@@ -7,17 +7,17 @@ const webpack = require('webpack');
 const path = require('path');
 
 const IndexConfig = {
-  source: "./src/*.jsx",
-  output: "./assets/js",
+  source: './src/*.jsx',
+  output: './assets/js',
   uglify: false,
   webpack: {
-    entry: "./src/index.jsx",
+    entry: './src/index.jsx',
     output: {
-      filename:  "index.js"
+      filename:  'index.js'
     },
     resolve: {
-      extensions: ["", ".js", ".jsx", ".es6"],
-      modulesDirectories: ["node_modules"]
+      extensions: ['', '.js', '.jsx', '.es6'],
+      modulesDirectories: ['node_modules']
     },
     plugins: [
       new webpack.optimize.DedupePlugin(),
@@ -29,22 +29,27 @@ const IndexConfig = {
           test: /\.jsx$/,
           exclude: ['node_modules'],
           include: [
-            path.resolve(__dirname, "src"),
+            path.resolve(__dirname, 'src'),
           ],
-          loader: "babel-loader",
+          loader: 'babel-loader',
           query: {
             presets: ['es2015', 'react']
           }
         }
       ]
     },
-    devtool: "source-map"
+    devtool: 'source-map'
   }
 }
 
-gulp.task("index", function () {
+gulp.task('index', function () {
+  const wp = gulpWebpack(IndexConfig.webpack);
   return gulp.src(IndexConfig.source)
-    .pipe(gulpWebpack(IndexConfig.webpack))
+    .pipe(wp.on('error', (e)=>{
+      // console.log(e.message);
+      console.log(e.codeFrame);
+      wp.emit('end');
+    }))
     .pipe(gulpIf(IndexConfig.uglify, gulpUglify()))
     .pipe(gulp.dest(IndexConfig.output));
 });
