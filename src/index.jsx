@@ -130,6 +130,6 @@ class WebRTC extends React.Component {
 
 
 ReactDOM.render(
-  <WebRTC skyway='d4137abc-6c4b-4c26-b8ec-a692a70cb971' roomId={window.location.hash.substr(1)}/>,
+  <WebRTC skyway='a03f1db0-719d-496e-ac62-c69833c88fd6' roomId={window.location.hash.substr(1)}/>,
   document.getElementById('application')
 );
